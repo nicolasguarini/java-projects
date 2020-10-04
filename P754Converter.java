@@ -44,9 +44,10 @@ class Main{
 class P754Converter{
     public static String decimalToP754(String number){
         int signBit, intPart, positionsToShift = 0;
-        String convertedNumber = "", binaryIntegerPart;
+        double decimalPart;
+        String convertedNumber = "", binaryIntegerPart, binaryDecimalPart, binaryNumber;
 
-        if(numer.charAt(0) != '-' && number.charAt(0) != '+') //add positive sign if not present
+        if(number.charAt(0) != '-' && number.charAt(0) != '+') //add positive sign if not present
             number = "+" + number;
         
         if(number.charAt(0) == '-') //! 1) Sign bit: 1 if negative, 0 if positive.
@@ -58,23 +59,40 @@ class P754Converter{
             number = number + ".0";
 
         intPart = Integer.parseInt(number.substring(1, number.indexOf('.')));
-        binaryIntegerPart = this.decimalToBinary(intPart); //! 2) Convert the integer part into binary
+        binaryIntegerPart = Integer.toBinaryString(intPart); //! 2) Convert the integer part into binary
 
-        positionsToShift = binaryIntegerPart.length - 1;      
+        positionsToShift = binaryIntegerPart.length() - 1; 
+
+        decimalPart = Double.parseDouble("0." + (number.substring(number.indexOf('.') + 1))); 
+        binaryDecimalPart =  decimalFractionToBinary(decimalPart); //! 3) Convert the decimal fraction part into binary
         
+        binaryNumber = binaryIntegerPart + "." + binaryDecimalPart;
 
         return convertedNumber;
+    }
+
+    static String decimalFractionToBinary(double decimalFraction){
+        int fractBit;
+        String binary = "";
+
+        for(int i = 0; i < 10; i++){ //the precision after decimal point will be 10 bits
+            decimalFraction *= 2;
+            fractBit = (int) decimalFraction;
+
+            if(fractBit == 1){
+                decimalFraction -= fractBit;
+                binary += "1";
+            }
+            else
+                binary += "0";
+        }
+
+        return binary;
     }
 
     public static String P754ToDecimal(String number){
         String convertedNumber = "";
         return convertedNumber;
-    }
-
-    String decimalToBinary(int number){
-        String binaryNumber = "";
-
-        return binaryNumber;
     }
 }
 
