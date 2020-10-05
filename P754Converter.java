@@ -75,6 +75,11 @@ class P754Converter{
         return convertedNumber;
     }
 
+    public static String P754ToDecimal(String number){
+        String convertedNumber = "";
+        return convertedNumber;
+    }
+
     static String decimalFractionToBinary(double decimalFraction){
         int fractBit;
         String binary = "";
@@ -101,10 +106,5 @@ class P754Converter{
     static String charRemoveAt(String str, int p) {  
         return str.substring(0, p) + str.substring(p + 1);  
     } 
-
-    public static String P754ToDecimal(String number){
-        String convertedNumber = "";
-        return convertedNumber;
-    }
 }
 
