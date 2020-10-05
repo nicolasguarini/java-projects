@@ -15,9 +15,9 @@ class Main{
             switch(userChoice){
                 case 1:
                     clear();
-                    System.out.println("Enter a number: ");
+                    System.out.println("Enter a number: ");     //-5.8281215
                     number = input.next();
-                    P754Converter.decimalToP754(number);
+                    System.out.println("IEEE 754: " + P754Converter.decimalToP754(number));
                     pause();
                     break;
                 case 2: 
@@ -68,22 +68,12 @@ class P754Converter{
         
         binaryNumber = binaryIntegerPart + "." + binaryDecimalPart; //assembling the final binary string
 
-        shiftedBinaryNumber = addChar(charRemoveAt(binaryNumber, binaryNumber.indexOf('.')), '.', 1); //shifting the floating point
-
-        //TODO: E' .replaceFirst() che sbaglia a fare quella roba semplicissima che deve fare porcodio
+        shiftedBinaryNumber = addChar(charRemoveAt(binaryNumber, binaryNumber.indexOf('.')), '.', 1); //! 4) Shifting the floating point
 
         convertedNumber = signBit + " " + Integer.toBinaryString(127 + positionsToShift) + " " + shiftedBinaryNumber.substring(2); //assembling the final P754 string 
-        pad =  34 - convertedNumber.length(); //calculating the number of 0s to add at the end of the string to reach 32 bits
-
-        for(int i = 0; i < pad; i++)
-            convertedNumber += "0";
-
-        System.out.println(convertedNumber);
 
         return convertedNumber;
     }
-
-    //-5.8281215
 
     static String decimalFractionToBinary(double decimalFraction){
         int fractBit;
