@@ -43,9 +43,9 @@ class Main{
 
 class P754Converter{
     public static String decimalToP754(String number){
-        int signBit, intPart, positionsToShift = 0;
+        int signBit, intPart, positionsToShift = 0, pad;
         double decimalPart;
-        String convertedNumber = "", binaryIntegerPart, binaryDecimalPart, binaryNumber;
+        String convertedNumber = "", binaryIntegerPart, binaryDecimalPart, binaryNumber, shiftedBinaryNumber;
 
         if(number.charAt(0) != '-' && number.charAt(0) != '+') //add positive sign if not present
             number = "+" + number;
@@ -66,16 +66,30 @@ class P754Converter{
         decimalPart = Double.parseDouble("0." + (number.substring(number.indexOf('.') + 1))); 
         binaryDecimalPart =  decimalFractionToBinary(decimalPart); //! 3) Convert the decimal fraction part into binary
         
-        binaryNumber = binaryIntegerPart + "." + binaryDecimalPart;
+        binaryNumber = binaryIntegerPart + "." + binaryDecimalPart; //assembling the final binary string
+
+        shiftedBinaryNumber = addChar(charRemoveAt(binaryNumber, binaryNumber.indexOf('.')), '.', 1); //shifting the floating point
+
+        //TODO: E' .replaceFirst() che sbaglia a fare quella roba semplicissima che deve fare porcodio
+
+        convertedNumber = signBit + " " + Integer.toBinaryString(127 + positionsToShift) + " " + shiftedBinaryNumber.substring(2); //assembling the final P754 string 
+        pad =  34 - convertedNumber.length(); //calculating the number of 0s to add at the end of the string to reach 32 bits
+
+        for(int i = 0; i < pad; i++)
+            convertedNumber += "0";
+
+        System.out.println(convertedNumber);
 
         return convertedNumber;
     }
+
+    //-5.8281215
 
     static String decimalFractionToBinary(double decimalFraction){
         int fractBit;
         String binary = "";
 
-        for(int i = 0; i < 10; i++){ //the precision after decimal point will be 10 bits
+        for(int i = 0; i < 22; i++){ //the precision after decimal point will be 10 bits
             decimalFraction *= 2;
             fractBit = (int) decimalFraction;
 
@@ -89,6 +103,14 @@ class P754Converter{
 
         return binary;
     }
+
+    static String addChar(String str, char ch, int position) {
+        return str.substring(0, position) + ch + str.substring(position);
+    }
+
+    static String charRemoveAt(String str, int p) {  
+        return str.substring(0, p) + str.substring(p + 1);  
+    } 
 
     public static String P754ToDecimal(String number){
         String convertedNumber = "";
